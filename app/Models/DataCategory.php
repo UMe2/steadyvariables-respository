@@ -18,7 +18,8 @@ class DataCategory extends Model
 
     public function variables()
     {
-        return $this->hasManyDeep(Data::class,[SubCategory::class]);
+        return $this->hasManyDeep(SubcategoryVariable::class,[SubCategory::class],
+            ['data_category_id'],['subcategory_id']);
     }
 
 }

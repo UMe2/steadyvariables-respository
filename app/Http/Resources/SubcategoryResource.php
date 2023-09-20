@@ -14,6 +14,20 @@ class SubcategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+
+        if (isset($request->subcategory)){
+            return [
+                "id"=>$this->id,
+                "name"=>$this->name,
+                "variables"=> SubcategoryVariableResoource::collection($this->variables) ,
+                "category"=>$this->category?->name
+            ];
+        }
+        return [
+            "id"=>$this->id,
+            "name"=>$this->name,
+            "variables"=>$this->variables?->count(),
+            "category"=>$this->category?->name
+        ];
     }
 }

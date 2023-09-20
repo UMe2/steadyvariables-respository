@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_variables', function (Blueprint $table) {
+        Schema::create('subcategory_variable_records', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('data_id');
-            $table->foreignUuid('variable_id');
+            $table->foreignUuid('subcategory_variable_id');
+            $table->string('record');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_variables');
+        Schema::dropIfExists('subcategory_variable_records');
     }
 };

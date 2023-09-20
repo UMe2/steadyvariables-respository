@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('sub_category_id');
-            $table->string('name');
-            $table->string('alias')->nullable();
-            $table->timestamps();
+        Schema::table('subcategory_variables', function (Blueprint $table) {
+            $table->integer('isKey')->unsigned()->default(0)->change();
+            $table->integer('required')->default(1)->change();
         });
     }
 
@@ -25,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data');
+        Schema::table('subcategory_variable', function (Blueprint $table) {
+            //
+        });
     }
 };

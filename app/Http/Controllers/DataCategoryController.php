@@ -13,7 +13,7 @@ class DataCategoryController extends Controller
     {
         $category = DataCategory::all();
 
-        return $this->sendResponse($category,'data categories',200);
+        return $this->sendResponse( DataCategoryResource::collection($category) ,'data categories',200);
     }
 
     public function create(Request $request)
@@ -32,7 +32,7 @@ class DataCategoryController extends Controller
 
         $category->save();
 
-        return $this->sendResponse($category,'category created',201);
+        return $this->sendResponse( new DataCategoryResource($category) ,'category created',201);
     }
 
     public function details($category)
@@ -73,4 +73,5 @@ class DataCategoryController extends Controller
         }
 
     }
+
 }

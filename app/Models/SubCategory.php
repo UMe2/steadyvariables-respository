@@ -9,14 +9,24 @@ use Illuminate\Database\Eloquent\Model;
 class SubCategory extends Model
 {
     use HasFactory,HasUuids;
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
     public function category()
     {
         return $this->belongsTo(DataCategory::class,'data_category_id');
     }
 
-    public function datas()
+    public function variables()
     {
-
+        return $this->hasMany(SubcategoryVariable::class,'subcategory_id');
     }
+
+//    public function variables()
+//    {
+//        return $this->hasManyThrough(Variable::class,SubcategoryVariable::class,'subcategory_id','variable_id');
+//    }
+
+
+
+
 }

@@ -14,6 +14,19 @@ class DataCategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+
+        if (isset($request->category)){
+            return [
+                'id'=>$this->id,
+                'name'=>$this->name,
+                'subcategories'=>SubcategoryResource::collection($this->subcategories),
+                "variables"=> $this->variables,
+            ];
+        }
+        return [
+            'id'=>$this->id,
+            'name'=>$this->name,
+            'numberOfSubcategories'=>$this->subcategories?->count()
+        ];
     }
 }
