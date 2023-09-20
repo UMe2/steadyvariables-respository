@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DataCategoryController;
+use App\Models\DataCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],function (){
+
+    Route::group(['prefix'=>'data-category','as'=>'category.'],function (){
+       Route::get('/',[DataCategoryController::class,'index'])->name('index');
+       Route::post('/',[DataCategoryController::class,'create'])->name('create');
+       Route::get('/{category}',[DataCategoryController::class,'details'])->name('view');
+       Route::patch('/{category}',[DataCategoryController::class,'update'])->name('update');
+    });
 });
+
