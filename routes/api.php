@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get("/{subcategory}/template",[SubCategoryController::class,'download_template'])->name('template');
+
 Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],function (){
 
     Route::group(['prefix'=>'data-category','as'=>'category.'],function (){
@@ -34,6 +36,10 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
         Route::get('/{subcategory}',[SubCategoryController::class,'details'])->name('view');
         Route::patch('/{subcategory}',[SubCategoryController::class,'update'])->name('update');
         Route::patch('/{subcategory}/variable',[SubCategoryController::class,'add_variable'])->name('add_variable');
+//        Route::patch('/{subcategory}/data',[SubCategoryController::class,'add_data'])
+//            ->name('add_data');
+        Route::get("/{subcategory}/template",[SubCategoryController::class,'download_template'])->name('template');
+        Route::post("/data/updload",[SubCategoryController::class,'add_data'])->name('template.add');
     });
 
     Route::group(['prefix'=>'variables','as'=>'variable.'],function (){

@@ -9,4 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Variable extends Model
 {
     use HasFactory,HasUuids;
+
+    public function subcategory()
+    {
+        return $this->hasMany(SubcategoryVariable::class,'variable_id');
+    }
 }
