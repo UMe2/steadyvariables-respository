@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('subcategory_variables', function (Blueprint $table) {
-            $table->integer('isKey')->unsigned()->default(0)->change();
+            $table->integer('isKey')->unsigned()->default(0);
             $table->integer('required')->default(1)->change();
         });
     }
