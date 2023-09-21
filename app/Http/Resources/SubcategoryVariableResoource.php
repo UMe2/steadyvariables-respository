@@ -14,6 +14,13 @@ class SubcategoryVariableResoource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+        if ($request->routeIs("template") || $request->routeIs("admin.subcategory.template")){
+            return [
+                "subcategory"=>"Subcategory Name",
+                "variable"=>$this->variable?->name,
+            ];
+        }
         return [
             "id"=>$this->id,
             "variable_id"=>$this->variable?->id,

@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataRecordExport;
+use App\Http\Resources\DataRecordResource;
 use App\Http\Resources\SubcategoryResource;
+use App\Http\Resources\SubcategoryVariableResoource;
+use App\Models\DataRecord;
 use App\Models\SubCategory;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SubCategoryController extends Controller
 {
@@ -44,6 +50,9 @@ class SubCategoryController extends Controller
         if (!$subcategory){
             return $this->sendError('not found','subcategory not found',404);
         }
+
+        //$data = $subcategory->data_records->groupBy('batch');
+
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'subcategory found',200);
     }
@@ -99,6 +108,100 @@ class SubCategoryController extends Controller
         ]);
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'variable added',201);
+    }
+
+    public function add_data(Request $request, $subcategory=null)
+    {
+        $subcategory = SubCategory::find($request->subcategory);
+
+      //  return $subcategory;
+
+        if (!$subcategory){
+            return $this->sendError('not found','subcategory not found',404);
+        }
+        $validator = Validator::make($request->all(),[
+            "template"=>"required|mimes:xlsx"
+        ]);
+
+        if ($validator->fails()){
+            return  $this->sendError('validation error',$validator->errors()->all(),400);
+        }
+
+        $excel = Excel::toCollection(null,$request->template)[0];
+
+        //return $excel;
+        $upload=[];
+        $variables =[];
+        for ($i =0;$i< sizeof($excel);$i++){
+            if ($i == 0) {
+               $variables = $excel[$i];
+                continue;
+            }
+
+
+            $upload[]=$excel[$i];
+
+        }
+         $subcategoryId = $subcategory->id;
+        $validVariables=[];
+
+//          return  Variable::where('name', 'surface dressed')->whereHas('subcategory', function ($query) use ($subcategoryId) {
+//            $query->where('subcategory_id', '=','9a2f5ca4-fe72-414f-ae75-3162997db79e');
+//        })->get();
+
+        foreach ($variables as $v){
+
+            $response = Variable::select('subcategory_variables.id as subcategory_variable_id')
+                ->join('subcategory_variables', 'variables.id', '=', 'subcategory_variables.variable_id')
+                ->where('variables.name', $v)
+                ->where('subcategory_variables.subcategory_id', $subcategoryId)
+                ->first();
+
+
+           $validVariables[] =$response?->subcategory_variable_id;
+        }
+        if (count($validVariables) != count($subcategory->variables)){
+
+            return $this->sendError("validation error","incorrect variables");
+        }
+        foreach ($upload as $key => $up){
+            $batch = rand(00000,99999);
+            $i=0;
+            foreach ($up as $loopKey => $data){
+                $subcategory->data_records()->create([
+                    "subcategory_variable_id"=>$validVariables[$i],
+                    "data"=>$data,
+                    "batch"=>$batch
+                ]);
+                $i++;
+            }
+
+        }
+
+
+        return $request->template;
+    }
+
+    public function download_template($subcategory)
+    {
+        $subcategory = SubCategory::find($subcategory);
+
+        if (!$subcategory){
+            return $this->sendError('not found','subcategory not found',404);
+        }
+        $resourceCollection =  SubcategoryVariableResoource::collection($subcategory->variables);
+        $heading =[];
+
+        foreach ($resourceCollection as $head){
+            $heading[]= $head->variable?->name;
+        }
+
+        sort($heading);
+
+
+        //return  $heading;
+
+        return Excel::download(new DataRecordExport($subcategory,$resourceCollection,$heading),str_replace(" ","_",$subcategory->name,).'.xls');
     }
     public function delete($subcategory)
     {
