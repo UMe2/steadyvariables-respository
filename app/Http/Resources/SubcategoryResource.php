@@ -15,6 +15,24 @@ class SubcategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
 
+        if ($request->routeIs('guest.subcategory')){
+            return [
+                "id"=>$this->id,
+                "name"=>$this->name,
+                "variables"=> SubcategoryVariableResoource::collection($this->variables) ,
+                "category"=>$this->category?->name,
+                "dataRecord"=> DataRecordResource::collection($this->data_records)->groupBy("batch")
+            ];
+        }
+
+        if ($request->routeIs('guest.*')){
+            return [
+                "id"=>$this->id,
+                "name" =>$this->name,
+                "category"=>$this->category?->name,
+                "category_id"=>$this->category?->id
+            ];
+        }
         if (isset($request->subcategory)){
             return [
                 "id"=>$this->id,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommonKnowledgeController;
 use App\Http\Controllers\DataCategoryController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\SubCategoryController;
@@ -50,9 +51,21 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
        Route::patch('/{variable}',[VariableController::class,'update'])->name('update');
     });
 
+    Route::group(['prefix'=>'knowledge','as'=>'knowledge.'],function (){
+       Route::get('/',[CommonKnowledgeController::class,'index'])->name('index');
+       Route::post('/',[CommonKnowledgeController::class,'create'])->name('create');
+       Route::get('/{knowledge}',[CommonKnowledgeController::class,'details'])->name('details');
+       Route::patch('/{knowledge}',[CommonKnowledgeController::class,'update'])->name('update');
+
+    });
+
 });
 
 Route::group(['prefix'=>'guest','as'=>'guest.'],function (){
    Route::get('/index',[GuestController::class,'index'])->name('index');
+   Route::get('/search',[GuestController::class,'search'])->name('search');
+   Route::get('/subcategories',[GuestController::class,'subcategories'])->name('subcategories');
+   Route::get('/subcategories/{subcategory}',[GuestController::class,'subcategory'])->name('subcategory');
+   Route::get('/categories',[GuestController::class,'categories'])->name('categories');
 });
 
