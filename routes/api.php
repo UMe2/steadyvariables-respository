@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DataCategoryController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\VariableController;
 use App\Models\DataCategory;
@@ -49,7 +50,9 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
        Route::patch('/{variable}',[VariableController::class,'update'])->name('update');
     });
 
+});
 
-
+Route::group(['prefix'=>'guest','as'=>'guest.'],function (){
+   Route::get('/index',[GuestController::class,'index'])->name('index');
 });
 

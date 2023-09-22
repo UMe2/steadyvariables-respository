@@ -14,8 +14,16 @@ class DataRecordResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        if (isset($request->subcategory)){
+            return [
+                "id"=>$this->id,
+                "variable"=>$this->subcategory_variable?->variable?->name,
+                "data"=> number_format($this->data,2),
+            ];
+        }
+
         return [
-//            "id"=>$this->id,
+            "id"=>$this->id,
             "variable"=>$this->subcategory_variable?->variable?->name,
             "data"=> number_format($this->data,2),
             "subcategory"=> $this->subcategory?->name,

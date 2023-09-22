@@ -11,6 +11,7 @@ class DataRecord extends Model
     use HasFactory,HasUuids;
 
     protected $guarded=[];
+    protected $appends=["variable"];
     public function subcategory()
     {
         return $this->belongsTo(SubCategory::class,'subcategory_id');
@@ -19,6 +20,11 @@ class DataRecord extends Model
     public function subcategory_variable()
     {
         return $this->belongsTo(SubcategoryVariable::class,'subcategory_variable_id');
+    }
+
+    public function getVariableAttribute()
+    {
+        return $this->subcategory_variable?->variable?->name;
     }
 
 
