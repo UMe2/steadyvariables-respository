@@ -16,6 +16,9 @@ class GuestController extends Controller
            $data = SubCategory::where('name','LIKE',"%".$query."%")->get();
 
            return SubcategoryResource::collection($data);
+
+
+
         }
 
     }
