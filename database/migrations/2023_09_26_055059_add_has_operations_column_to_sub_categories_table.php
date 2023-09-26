@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('common_knowledge', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('title')->nullable();
-            $table->text('message')->nullable();
-            $table->timestamps();
+        Schema::table('sub_categories', function (Blueprint $table) {
+            $table->boolean('hasBasicOperation')->default(false)->nullable();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('common_knowledge');
+        Schema::table('sub_categories', function (Blueprint $table) {
+            //
+        });
     }
 };

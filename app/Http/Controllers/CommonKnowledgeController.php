@@ -12,7 +12,7 @@ class CommonKnowledgeController extends Controller
 
     public function index()
     {
-        $knowledges = CommonKnowledge::order('created_at','desc')->paginate(10);
+        $knowledges = CommonKnowledge::orderBy('created_at','desc')->paginate(10);
 
         return $this->sendResponse(KnowledgeResource::collection($knowledges),'list of knowledge',200);
     }
