@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DataCategoryResource;
+use App\Http\Resources\KnowledgeResource;
 use App\Http\Resources\SubcategoryResource;
+use App\Models\CommonKnowledge;
+use App\Models\DataCategory;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
 
@@ -10,16 +14,73 @@ class GuestController extends Controller
 {
     public function index(Request $request)
     {
-        $query = request()->search;
-        if (isset($query)){
 
-           $data = SubCategory::where('name','LIKE',"%".$query."%")->get();
+        $subcategories = SubCategory::orderBy("name","asc")->get();
+        $categories = DataCategory::all();
+        $knowledge = CommonKnowledge::all();
 
            return SubcategoryResource::collection($data);
 
+        if (count($knowledge) >0){
+            $knowledge= $knowledge->random(10);
+        }
+        $data=[
+            "categories"=>DataCategoryResource::collection($categories),
+            "knowledge"=> KnowledgeResource::collection($knowledge),
+            "datasets"=> SubcategoryResource::collection($subcategories)
+        ];
+        return $this->sendResponse($data,'index',200);
+    }
+
+    public function subcategories()
+    {
+        $subcategories = SubCategory::all();
+
+        return $this->sendResponse(SubcategoryResource::collection($subcategories),'list of subcategories',200);
+    }
+
+    public function search(Request $request)
+    {
+        if (isset($request->search)){
+//            if ($request->search !=null)
+            $subcategory = SubCategory::where("id",$request->search)->get();
 
 
+            if (count($subcategory) < 1){
+                return $this->sendError("not found","data not found",404);
+            }
+            $data=[
+                "topsearch"=>[],
+                "data"=>SubcategoryResource::collection($subcategory),
+            ];
+
+        }else{
+                $subcategory = SubCategory::orderBy('name','asc')->get();
+
+            $data=[
+                "topsearch"=>[],
+                "data"=>SubcategoryResource::collection($subcategory),
+            ];
+        }
+        return $this->sendResponse($data,"search response",200);
+    }
+
+    public function categories()
+    {
+        $categories = DataCategory::all();
+
+        return $this->sendResponse(DataCategoryResource::collection($categories),'list of categories',200);
+    }
+
+    public function subcategory($subcategory)
+    {
+        $subcategory = SubCategory::find($subcategory);
+
+        if (!$subcategory){
+            return $this->sendError("not found","data not found",404);
         }
 
+        return $this->sendResponse(new SubcategoryResource($subcategory),"data details",200);
     }
+
 }

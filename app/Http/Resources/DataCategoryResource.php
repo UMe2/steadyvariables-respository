@@ -15,6 +15,12 @@ class DataCategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
 
+        if ($request->routeIs("guest.*")){
+            return [
+                "id"=>$this->id,
+                "name"=>$this->name
+            ];
+        }
         if (isset($request->category)){
             return [
                 'id'=>$this->id,
