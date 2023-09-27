@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DataCategoryResource;
 use App\Http\Resources\KnowledgeResource;
 use App\Http\Resources\SubcategoryResource;
+use App\Mail\SubscriberMail;
 use App\Models\CommonKnowledge;
 use App\Models\DataCategory;
 use App\Models\SubCategory;
+use App\Models\Subscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class GuestController extends Controller
@@ -42,6 +45,7 @@ class GuestController extends Controller
 
     public function search(Request $request)
     {
+        $topsearch =SubcategoryResource::collection(SubCategory::orderBY('search_count','DESC')->limit(10)->get()) ;
         if (isset($request->search)){
 //            if ($request->search !=null)
             $subcategory = SubCategory::where("id",$request->search)->get();
@@ -51,15 +55,15 @@ class GuestController extends Controller
                 return $this->sendError("not found","data not found",404);
             }
             $data=[
-                "topsearch"=>[],
+                "topsearch"=>$topsearch,
                 "data"=>SubcategoryResource::collection($subcategory),
             ];
 
         }else{
-                $subcategory = SubCategory::orderBy('name','asc')->get();
+            $subcategory = SubCategory::orderBy('name','asc')->get();
 
             $data=[
-                "topsearch"=>[],
+                "topsearch"=>$topsearch,
                 "data"=>SubcategoryResource::collection($subcategory),
             ];
         }
@@ -81,6 +85,10 @@ class GuestController extends Controller
             return $this->sendError("not found","data not found",404);
         }
 
+        $subcategory->search_count+=1;
+
+        $subcategory->update();
+
         return $this->sendResponse(new SubcategoryResource($subcategory),"data details",200);
     }
 
@@ -93,6 +101,16 @@ class GuestController extends Controller
         if ($validator->fails()){
             return $this->sendError('validation error',$validator->errors()->all(),400);
         }
+
+        $subscriber = new Subscriber;
+
+        $subscriber->email = $request->email;
+
+        $subscriber->save();
+
+        Mail::to($subscriber->email)->queue(new SubscriberMail());
+
+        return $this->sendResponse("Subscription success","success",201);
 
 
     }
