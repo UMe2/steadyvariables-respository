@@ -9,6 +9,7 @@ use App\Models\CommonKnowledge;
 use App\Models\DataCategory;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GuestController extends Controller
 {
@@ -81,6 +82,19 @@ class GuestController extends Controller
         }
 
         return $this->sendResponse(new SubcategoryResource($subcategory),"data details",200);
+    }
+
+    public function subscribe(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'email'=>'email|required|string'
+        ]);
+
+        if ($validator->fails()){
+            return $this->sendError('validation error',$validator->errors()->all(),400);
+        }
+
+
     }
 
 }
