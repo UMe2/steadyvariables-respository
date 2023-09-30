@@ -24,7 +24,7 @@ class GuestController extends Controller
         $knowledge = CommonKnowledge::all();
 
 
-        if (count($knowledge) >0){
+        if (count($knowledge) >10){
             $knowledge= $knowledge->random(10);
         }
         $data=[
