@@ -46,6 +46,7 @@ class GuestController extends Controller
     public function search(Request $request)
     {
         $topsearch =SubcategoryResource::collection(SubCategory::orderBY('search_count','DESC')->limit(10)->get()) ;
+        $data=[];
         if (isset($request->search)){
 //            if ($request->search !=null)
             $subcategory = SubCategory::where("id",$request->search)->get();
