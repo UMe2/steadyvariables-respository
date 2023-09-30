@@ -23,7 +23,6 @@ class GuestController extends Controller
         $categories = DataCategory::all();
         $knowledge = CommonKnowledge::all();
 
-           return SubcategoryResource::collection($data);
 
         if (count($knowledge) >0){
             $knowledge= $knowledge->random(10);
