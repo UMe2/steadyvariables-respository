@@ -18,7 +18,7 @@ class DataRecordResource extends JsonResource
             return [
                 "id"=>$this->id,
                 "variable"=>$this->subcategory_variable?->variable?->name,
-                "data"=> number_format($this->data,2),
+                "data"=> $this->data
             ];
         }
 
