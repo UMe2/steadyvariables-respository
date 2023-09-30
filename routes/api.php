@@ -41,7 +41,7 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
 //        Route::patch('/{subcategory}/data',[SubCategoryController::class,'add_data'])
 //            ->name('add_data');
         Route::get("/{subcategory}/template",[SubCategoryController::class,'download_template'])->name('template');
-        Route::post("/data/updload",[SubCategoryController::class,'add_data'])->name('template.add');
+        Route::post("/data/upload",[SubCategoryController::class,'add_data'])->name('template.add');
     });
 
     Route::group(['prefix'=>'variables','as'=>'variable.'],function (){
