@@ -25,7 +25,14 @@ class SubcategoryResource extends JsonResource
             ];
         }
 
-        if ($request->routeIs('guest.*')){
+        if ($request->routeIs('guest.index')){
+            return [
+                "id"=>$this->id,
+                "name" =>$this->name,
+            ];
+        }
+
+        if ($request->routeIs('guest.search')){
             return [
                 "id"=>$this->id,
                 "name" =>$this->name,
@@ -33,6 +40,8 @@ class SubcategoryResource extends JsonResource
                 "category_id"=>$this->category?->id
             ];
         }
+
+
         if (isset($request->subcategory)){
             return [
                 "id"=>$this->id,
