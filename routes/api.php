@@ -63,7 +63,7 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
 
 Route::group(['prefix'=>'guest','as'=>'guest.'],function (){
    Route::get('/index',[GuestController::class,'index'])->name('index');
-   Route::post('/subscribe',[GuestController::class,'subscribe'])->name('subscribe');
+   Route::post('/subscribe',[GuestController::class,'subscribe_newsletter'])->name('subscribe');
    Route::get('/search',[GuestController::class,'search'])->name('search');
    Route::get('/subcategories',[GuestController::class,'subcategories'])->name('subcategories');
    Route::get('/subcategories/{subcategory}',[GuestController::class,'subcategory'])->name('subcategory');

@@ -103,7 +103,7 @@ class GuestController extends Controller
         return $this->sendResponse(new SubcategoryResource($subcategory),"data details",200);
     }
 
-    public function subscribe(Request $request)
+    public function subscribe_newsletter(Request $request)
     {
         $validator = Validator::make($request->all(),[
             'email'=>'email|required|string'
