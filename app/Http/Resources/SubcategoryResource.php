@@ -21,6 +21,7 @@ class SubcategoryResource extends JsonResource
                 "name"=>$this->name,
                 "variables"=> SubcategoryVariableResoource::collection($this->variables) ,
                 "category"=>$this->category?->name,
+                'description'=>$this->description,
                 "dataRecord"=> DataRecordResource::collection($this->data_records)->groupBy("batch")
             ];
         }
@@ -37,6 +38,7 @@ class SubcategoryResource extends JsonResource
                 "id"=>$this->id,
                 "name" =>$this->name,
                 "category"=>$this->category?->name,
+                'description'=>$this->description,
                 "category_id"=>$this->category?->id
             ];
         }
@@ -48,6 +50,7 @@ class SubcategoryResource extends JsonResource
                 "name"=>$this->name,
                 "variables"=> SubcategoryVariableResoource::collection($this->variables) ,
                 "category"=>$this->category?->name,
+                'description'=>$this->description,
                 "dataRecord"=> DataRecordResource::collection($this->data_records)->groupBy("batch")
             ];
         }
