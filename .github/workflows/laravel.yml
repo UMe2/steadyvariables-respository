@@ -33,36 +33,32 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
+  deploy:
 
-  
-// .github/workflows/laravel.yml
+    runs-on: ubuntu-latest
 
-deploy:
+    steps:
 
-  runs-on: ubuntu-latest
+      - name: Checkout
 
-  steps:
+        uses: actions/checkout@v2
 
-    - name: Checkout
+      - name: Deployment
 
-      uses: actions/checkout@v2
+        uses: appleboy/ssh-action@master
 
-    - name: Deployment
+        with:
 
-      uses: appleboy/ssh-action@master
+          host: ${{ secrets.SSH_HOST }}
 
-      with:
+          password: ${{ secrets.SSH_PASSWORD }}
 
-        host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
 
-        pa: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
 
-        username: ${{ secrets.SSH_USERNAME }}
+            cd /var/www/apps/steadydata
 
-        script: |
+            git checkout -f 
 
-          cd /var/www/apps/steadydata
-
-          git checkout -f 
-
-          git pull
+            git pull
