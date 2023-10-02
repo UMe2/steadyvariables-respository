@@ -34,7 +34,10 @@ class AutoNewsletter extends Command
         $subcribers = Subscriber::all();
 
         if ($subcribers->count() >0){
-            Mail::to($subcribers)->send(new NewsletterMail($c_knowledge?->message));
+            foreach ($subcribers as $subscriber){
+                Mail::to($subscriber->email)->queue(new NewsletterMail("Welcome"));
+            }
+
         }
         return 0;
     }
