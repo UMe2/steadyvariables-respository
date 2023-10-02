@@ -9,6 +9,7 @@
 </head>
 <body>
 {{$message}}
+Good one
 </body>
 </html>
 
