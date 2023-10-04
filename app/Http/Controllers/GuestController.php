@@ -100,7 +100,7 @@ class GuestController extends Controller
 
         $subcategory->update();
 
-        return $this->sendResponse(new SubcategoryResource($subcategory),"data details",200);
+        return $this->sendResponse(new SubcategoryResource($subcategory),"data details",201);
     }
 
     public function subscribe_newsletter(Request $request)
