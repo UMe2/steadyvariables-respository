@@ -31,7 +31,7 @@ jobs:
           script: |
             # Navigate to the Laravel project directory
              cd /var/www/apps/steadydata
-            # Fetch the latest changes from the Git repository
+          
             git checkout -f
             git pull
             # Install Composer dependencies
