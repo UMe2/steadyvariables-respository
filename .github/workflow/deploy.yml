@@ -1,0 +1,43 @@
+name: deploy
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+
+        uses: actions/checkout@v2
+
+      - name: Deployment
+
+        uses: appleboy/ssh-action@master
+
+        with:
+
+          host: ${{ secrets.SSH_HOST }}
+
+          password: ${{ secrets.SSH_PASSWORD }}
+
+          username: ${{ secrets.SSH_USERNAME }}
+
+          script: |
+            # Navigate to the Laravel project directory
+             cd /var/www/apps/steadydata
+            # Fetch the latest changes from the Git repository
+            git checkout -f
+            git pull
+            # Install Composer dependencies
+            composer install --no-interaction --prefer-dist --no-dev
+            # Run database migrations
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan optimize
