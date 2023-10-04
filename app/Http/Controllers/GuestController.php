@@ -46,9 +46,9 @@ class GuestController extends Controller
     {
         $topsearch =SubcategoryResource::collection(SubCategory::orderBY('search_count','DESC')->limit(10)->get()) ;
         $data=[];
-        if (isset($request->dataset)){
+        if (isset($request->search)){
 //            if ($request->search !=null)
-            $subcategory = SubCategory::where("id",$request->dataset)->get();
+            $subcategory = SubCategory::where("name",'LIKE',"%{$request->search}%")->get();
 
 
             if (count($subcategory) < 1){

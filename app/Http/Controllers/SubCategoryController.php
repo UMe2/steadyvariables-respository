@@ -160,6 +160,8 @@ class SubCategoryController extends Controller
 
            $validVariables[] =$response?->subcategory_variable_id;
         }
+
+//        return $validVariables;
         if (count($validVariables) != count($subcategory->variables)){
 
             return $this->sendError("validation error","incorrect variables");
