@@ -22,6 +22,7 @@ class GuestController extends Controller
         $subcategories = SubCategory::orderBy("name","asc")->get();
         $categories = DataCategory::all();
         $knowledge = CommonKnowledge::all();
+        $topsearch =SubcategoryResource::collection(SubCategory::orderBY('search_count','DESC')->limit(10)->get()) ;
 
 
         if (count($knowledge) >10){
@@ -30,7 +31,8 @@ class GuestController extends Controller
         $data=[
             "categories"=>DataCategoryResource::collection($categories),
             "knowledge"=> KnowledgeResource::collection($knowledge),
-            "datasets"=> SubcategoryResource::collection($subcategories)
+            "datasets"=> SubcategoryResource::collection($subcategories),
+            'topsearch'=>$topsearch
         ];
         return $this->sendResponse($data,'index',200);
     }
@@ -44,7 +46,7 @@ class GuestController extends Controller
 
     public function search(Request $request)
     {
-        $topsearch =SubcategoryResource::collection(SubCategory::orderBY('search_count','DESC')->limit(10)->get()) ;
+
         $data=[];
         if (isset($request->search)){
 //            if ($request->search !=null)
@@ -55,7 +57,6 @@ class GuestController extends Controller
                 return $this->sendError("not found","data not found",404);
             }
             $data=[
-                "topsearch"=>$topsearch,
                 "data"=>SubcategoryResource::collection($subcategory),
             ];
 
@@ -67,14 +68,12 @@ class GuestController extends Controller
                 return $this->sendError("not found","data not found",404);
             }
             $data=[
-                "topsearch"=>$topsearch,
                 "data"=>DataCategoryResource::collection($dataCategory),
             ];
         }else{
             $subcategory = SubCategory::orderBy('name','asc')->get();
 
             $data=[
-                "topsearch"=>$topsearch,
                 "data"=>SubcategoryResource::collection($subcategory),
             ];
         }
