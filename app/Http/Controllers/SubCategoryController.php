@@ -27,7 +27,8 @@ class SubCategoryController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'category'=>'required|uuid|exists:data_categories,id',
-            'name'=>'required|string|unique:sub_categories,name'
+            'name'=>'required|string|unique:sub_categories,name',
+            'description'=>'required|string'
         ]);
 
         if ($validator->fails()){
@@ -38,6 +39,7 @@ class SubCategoryController extends Controller
 
         $subcategory->data_category_id = $request->category;
         $subcategory->name = $request->name;
+        $subcategory->description= $request->description;
 
         $subcategory->save();
 
@@ -62,7 +64,8 @@ class SubCategoryController extends Controller
         $subcategory =  SubCategory::find($subcategory);
 
         $validator = Validator::make($request->all(),[
-            'name'=>'required|string|unique:sub_categories,name,'.$subcategory->id
+            'name'=>'required|string|unique:sub_categories,name,'.$subcategory->id,
+            'description'=>'required|string'
         ]);
 
         if ($validator->fails()){
@@ -73,6 +76,7 @@ class SubCategoryController extends Controller
 
 
         $subcategory->name = $request->name;
+        $subcategory->description = $request->description;
 
         $subcategory->update();
 
