@@ -61,19 +61,21 @@ class SubCategoryController extends Controller
 
     public function update(Request $request, $subcategory)
     {
-        $subcategory =  SubCategory::find($subcategory);
 
+        $subcategory = SubCategory::find($subcategory);
+        if (!$subcategory){
+            return $this->sendError('not found','subcategory not found',404);
+        }
+
+        //return $subcategory;
         $validator = Validator::make($request->all(),[
-            'name'=>'required|string|unique:sub_categories,name,'.$subcategory->id,
+            'name'=>"required|string|unique:sub_categories,name,".$subcategory->id."",
             'description'=>'required|string'
         ]);
 
         if ($validator->fails()){
             return $this->sendError('validator error',$validator->errors()->all(),400);
         }
-
-
-
 
         $subcategory->name = $request->name;
         $subcategory->description = $request->description;
