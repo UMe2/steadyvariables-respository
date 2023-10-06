@@ -64,7 +64,7 @@ class GuestController extends Controller
             $dataCategory = DataCategory::where("id",$request->dataCategory)->first();
 
 
-            if (!$dataCategory < 1){
+            if (!$dataCategory){
                 return $this->sendError("not found","data not found",404);
             }
             if (count($dataCategory->subcategories) < 1){
