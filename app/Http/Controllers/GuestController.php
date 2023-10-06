@@ -61,14 +61,17 @@ class GuestController extends Controller
             ];
 
         }elseif(isset($request->dataCategory)){
-            $dataCategory = DataCategory::where("id",$request->dataCategory)->get();
+            $dataCategory = DataCategory::where("id",$request->dataCategory)->first();
 
 
             if (count($dataCategory) < 1){
                 return $this->sendError("not found","data not found",404);
             }
+            if (count($dataCategory->subcategories) < 1){
+                return $this->sendError("not found","data not found",404);
+            }
             $data=[
-                "data"=>DataCategoryResource::collection($dataCategory),
+                "data"=>SubcategoryResource::collection($dataCategory?->subcategories),
             ];
         }else{
             $subcategory = SubCategory::orderBy('name','asc')->get();
