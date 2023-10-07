@@ -26,8 +26,7 @@ class SubcategoryVariableResoource extends JsonResource
             "variable_id"=>$this->variable?->id,
             "subcategory"=>$this->subcategory?->name,
             "variable"=>$this->variable?->name,
-            "required"=>$this->required==0? "no":"yes",
-            "isKey"=>$this->isKey==0? "no":"yes",
+            'firstColumn'=>$this->first_column == 1 ? true : false,
         ];
     }
 }

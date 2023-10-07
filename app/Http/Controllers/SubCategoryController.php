@@ -98,7 +98,8 @@ class SubCategoryController extends Controller
         $validator = Validator::make($request->all(),[
             'variable'=>'required|exists:variables,id|uuid',
             "required"=>"nullable|in:1,0",
-            "isKey"=>"nullable|in:0,1"
+            "isKey"=>"nullable|in:0,1",
+            "firstColumn"=>'required|in:0,1'
         ]);
 
         if ($validator->fails()){
@@ -110,7 +111,8 @@ class SubCategoryController extends Controller
         ],[
             "variable_id"=>$request->variable,
             "isKey"=>$request->isKey,
-            "required"=>$request->required
+            "required"=>$request->required,
+            "first_column"=> $request->firstColumn
         ]);
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'variable added',201);
