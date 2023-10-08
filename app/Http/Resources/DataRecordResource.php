@@ -18,6 +18,7 @@ class DataRecordResource extends JsonResource
             return [
                 "id"=>$this->id,
                 "variable"=>$this->subcategory_variable?->variable?->name,
+                "firstColumn"=>$this->subcategory_variable?->first_column == 1 ? true : false ,
                 "data"=> $this->data
             ];
         }

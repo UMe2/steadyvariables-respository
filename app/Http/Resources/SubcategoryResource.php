@@ -19,10 +19,13 @@ class SubcategoryResource extends JsonResource
             return [
                 "id"=>$this->id,
                 "name"=>$this->name,
-                "variables"=> SubcategoryVariableResoource::collection($this->variables) ,
+                "variables"=> SubcategoryVariableResoource::collection($this->variables)
+                ->sortByDesc('first_column'),
                 "category"=>$this->category?->name,
                 'description'=>$this->description,
-                "dataRecord"=> DataRecordResource::collection($this->data_records)->groupBy("batch")
+                "dataRecord"=> DataRecordResource::collection($this->data_records)
+                    ->sortByDesc('first_column')
+                    ->groupBy("batch")
             ];
         }
 

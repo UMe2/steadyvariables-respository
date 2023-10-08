@@ -19,6 +19,7 @@ class SubcategoryVariableResoource extends JsonResource
             return [
                 "subcategory"=>"Subcategory Name",
                 "variable"=>$this->variable?->name,
+                'firstColumn'=>$this->first_column == 1 ? true : false,
             ];
         }
         return [
