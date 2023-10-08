@@ -199,8 +199,7 @@ class SubCategoryController extends Controller
         if (!$subcategory){
             return $this->sendError('not found','subcategory not found',404);
         }
-        $resourceCollection =  SubcategoryVariableResoource::collection($subcategory->variables()
-            ->orderBy('first_column'));
+        $resourceCollection =  SubcategoryVariableResoource::collection($subcategory->variables?->sortByDesc('first_column'));
         $heading =[];
 
         foreach ($resourceCollection as $head){
