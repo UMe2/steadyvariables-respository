@@ -142,14 +142,27 @@ class SubCategoryController extends Controller
         $variables =[];
         for ($i =0;$i< sizeof($excel);$i++){
             if ($i == 0) {
+
                $variables = $excel[$i];
                 continue;
             }
 
 
+
+
             $upload[]=$excel[$i];
 
         }
+
+        $variables = $variables->filter(function ($value) {
+            return $value !== null;
+        });
+
+//        $upload = array_filter($upload, function ($value) {
+//            return $value !== null;
+//        });
+
+      // return $upload;
          $subcategoryId = $subcategory->id;
         $validVariables=[];
 
@@ -166,30 +179,43 @@ class SubCategoryController extends Controller
                 ->first();
 
 
-           $validVariables[] =$response?->subcategory_variable_id;
+           $validVariables[] =$response->subcategory_variable_id;
         }
 
-//        return $validVariables;
+      // return $validVariables;
+
+
         if (count($validVariables) != count($subcategory->variables)){
 
             return $this->sendError("validation error","incorrect variables");
         }
+
+        $cat =[];
+        //return $upload;
         foreach ($upload as $key => $up){
             $batch = rand(00000,99999);
+
             $i=0;
+
             foreach ($up as $loopKey => $data){
+                if ($data == null){
+                    continue;
+                }
                 $subcategory->data_records()->create([
                     "subcategory_variable_id"=>$validVariables[$i],
                     "data"=>$data,
                     "batch"=>$batch
                 ]);
+
                 $i++;
             }
+
+            //return $cat;
 
         }
 
 
-        return $request->template;
+        return $this->sendResponse(new  SubcategoryResource($subcategory),'data added',201);
     }
 
     public function download_template($subcategory)
