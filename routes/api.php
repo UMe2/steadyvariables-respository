@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommonKnowledgeController;
 use App\Http\Controllers\DataCategoryController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\OperationController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\VariableController;
 use App\Models\DataCategory;
@@ -56,6 +57,14 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
        Route::post('/',[CommonKnowledgeController::class,'create'])->name('create');
        Route::get('/{knowledge}',[CommonKnowledgeController::class,'details'])->name('details');
        Route::patch('/{knowledge}',[CommonKnowledgeController::class,'update'])->name('update');
+
+    });
+
+    Route::group(['prefix'=>'operations','as'=>'operation.'],function (){
+       Route::get('/',[OperationController::class,'index'])->name('index');
+       Route::post('/',[OperationController::class,'create'])->name('create');
+       Route::get('/{operation}',[OperationController::class,'details'])->name('details');
+       Route::patch('/{operation}',[OperationController::class,'update'])->name('update');
 
     });
 
