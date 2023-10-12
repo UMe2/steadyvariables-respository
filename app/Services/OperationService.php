@@ -30,7 +30,7 @@ class OperationService
 //        $sum = array_sum($data);
 //        $mean = $sum/count($data);
 
-        return $mean;
+        return $count;
 
     }
 
