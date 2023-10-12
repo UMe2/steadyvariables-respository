@@ -10,12 +10,18 @@ use App\Models\CommonKnowledge;
 use App\Models\DataCategory;
 use App\Models\SubCategory;
 use App\Models\Subscriber;
+use App\Services\OperationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class GuestController extends Controller
 {
+
+    public function __construct(private OperationService $operationService)
+    {
+    }
+
     public function index(Request $request)
     {
 
@@ -90,7 +96,7 @@ class GuestController extends Controller
         return $this->sendResponse(DataCategoryResource::collection($categories),'list of categories',200);
     }
 
-    public function subcategory($subcategory)
+    public function subcategory(Request $request,$subcategory)
     {
         $subcategory = SubCategory::find($subcategory);
 
@@ -98,9 +104,23 @@ class GuestController extends Controller
             return $this->sendError("not found","data not found",404);
         }
 
-        $subcategory->search_count+=1;
+        if ($request->operation == null){
+            $subcategory->search_count+=1;
 
-        $subcategory->update();
+            $subcategory->update();
+        }
+
+        if ($request->operation != null){
+            $operation = $subcategory->operations->find($request->operation);
+
+            //return $operation->operation;
+
+            //return $operation;
+            return $this->operationService->mean($operation->id);
+        }
+
+
+
 
         return $this->sendResponse(new SubcategoryResource($subcategory),"data details",200);
     }

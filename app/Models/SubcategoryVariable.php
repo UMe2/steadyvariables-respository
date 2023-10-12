@@ -21,4 +21,10 @@ class SubcategoryVariable extends Model
     {
         return $this->belongsTo(Variable::class,'variable_id');
     }
+
+    public function data_records()
+    {
+        return $this->hasMany(DataRecord::class,'subcategory_variable_id');
+    }
+
 }
