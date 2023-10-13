@@ -117,6 +117,39 @@ class SubCategoryController extends Controller
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'variable added',201);
     }
+    public function add_operation(Request $request,$subcategory)
+    {
+        $subcategory = SubCategory::find($subcategory);
+
+        if (!$subcategory){
+            return $this->sendError('not found','subcategory not found',404);
+        }
+
+        $validator = Validator::make($request->all(),[
+            'operation'=>'required|exists:operations,id|uuid',
+            "variable"=>"nullable|exists:variables,id|uuid",
+        ]);
+
+        if ($validator->fails()){
+            return  $this->sendError('validation error',$validator->errors()->all(),400);
+        }
+
+        $variable = $subcategory->variables->where('variable_id',$request->variable)->first();
+
+        if (!$variable){
+            return $this->sendError('not found',"variable selected not part of the dataset variable",400);
+        }
+
+
+        $subcategory->operations()->updateOrCreate([
+            "operation_id"=>$request->operation
+        ],[
+            "operation_id"=>$request->operation,
+            "variable_id"=>$request->variable,
+        ]);
+
+        return $this->sendResponse(new SubcategoryResource($subcategory),'variable added',201);
+    }
 
     public function add_data(Request $request, $subcategory=null)
     {
