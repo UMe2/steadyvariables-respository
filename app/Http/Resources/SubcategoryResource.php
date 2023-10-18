@@ -24,7 +24,8 @@ class SubcategoryResource extends JsonResource
                 'description'=>$this->description,
                 "dataRecord"=> DataRecordResource::collection($this->data_records)
                     ->groupBy("batch"),
-                "operations"=>DatasetOperationResource::collection($this->operations)
+                "operations"=>DatasetOperationResource::collection($this->operations),
+
             ];
         }
 

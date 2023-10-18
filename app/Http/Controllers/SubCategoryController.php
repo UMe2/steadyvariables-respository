@@ -8,8 +8,10 @@ use App\Http\Resources\SubcategoryResource;
 use App\Http\Resources\SubcategoryVariableResoource;
 use App\Models\DataRecord;
 use App\Models\SubCategory;
+use App\Models\SubcategoryVariable;
 use App\Models\Variable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -28,7 +30,9 @@ class SubCategoryController extends Controller
         $validator = Validator::make($request->all(),[
             'category'=>'required|uuid|exists:data_categories,id',
             'name'=>'required|string|unique:sub_categories,name',
-            'description'=>'required|string'
+            'description'=>'required|string',
+            'variables.*'=>'required',
+            'operations'=>'nullable'
         ]);
 
         if ($validator->fails()){
@@ -36,14 +40,36 @@ class SubCategoryController extends Controller
         }
 
         $subcategory = new SubCategory;
+        DB::transaction(function () use ($request,$subcategory){
 
-        $subcategory->data_category_id = $request->category;
-        $subcategory->name = $request->name;
-        $subcategory->description= $request->description;
 
-        $subcategory->save();
+            $subcategory->data_category_id = $request->category;
+            $subcategory->name = $request->name;
+            $subcategory->description= $request->description;
+
+            $subcategory->save();
+
+            foreach ($request->variables as $variable){
+                $subcategory->variables()->updateOrCreate([
+                    "variable_id"=>$variable['variable']
+                ],[
+                    "variable_id"=>$variable['variable'],
+                    "isKey"=>$variable['isKey'],
+                    "required"=>$variable['required'],
+                    "first_column"=> $variable['firstColumn'],
+                    'chart_data'=>$variable['chartData'],
+                    'chart_label'=>$variable['chartLabale']
+                ]);
+            }
+
+
+
+
+        });
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'subcategory created',201);
+
+
     }
 
     public function details($subcategory)
@@ -99,7 +125,10 @@ class SubCategoryController extends Controller
             'variable'=>'required|exists:variables,id|uuid',
             "required"=>"nullable|in:1,0",
             "isKey"=>"nullable|in:0,1",
-            "firstColumn"=>'required|in:0,1'
+            "firstColumn"=>'required|in:0,1',
+            'chartData'=>'required|in:0,1',
+            'chartLabel'=>'required|in:0,1',
+
         ]);
 
         if ($validator->fails()){
@@ -112,7 +141,9 @@ class SubCategoryController extends Controller
             "variable_id"=>$request->variable,
             "isKey"=>$request->isKey,
             "required"=>$request->required,
-            "first_column"=> $request->firstColumn
+            "first_column"=> $request->firstColumn,
+            "chart_label"=>$request->chartLabel,
+            'chart_data'=>$request->chartData,
         ]);
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'variable added',201);
@@ -282,5 +313,19 @@ class SubCategoryController extends Controller
        $subcategory = $subcategory->delete();
 
         return $this->sendResponse($subcategory,'subcategory deleted',200);
+    }
+
+    public function remove_variable($variableId)
+    {
+        $variable = SubcategoryVariable::find($variableId);
+
+        $variable->data_records()->delete();
+
+        $variable->delete();
+
+        return $this->sendResponse(null,'variabale removed',200);
+
+
+
     }
 }
