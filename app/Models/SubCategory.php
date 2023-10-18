@@ -31,6 +31,8 @@ class SubCategory extends Model
         return $this->hasMany(SubcategoryOperation::class,'subcategory_id');
     }
 
+
+
 //    public function variables()
 //    {
 //        return $this->hasManyThrough(Variable::class,SubcategoryVariable::class,'subcategory_id','variable_id');

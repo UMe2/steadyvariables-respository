@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DataCategoryResource;
+use App\Http\Resources\DataRecordResource;
 use App\Http\Resources\KnowledgeResource;
 use App\Http\Resources\SubcategoryResource;
 use App\Mail\SubscriberMail;
@@ -110,19 +111,22 @@ class GuestController extends Controller
             $subcategory->update();
         }
 
-        if ($request->operation != null){
-            $operation = $subcategory->operations->find($request->operation);
 
-            //return $operation->operation;
+        $chartLabel = $subcategory->variables()->where('chart_label',true)->first();
 
-            //return $operation;
-            return $this->operationService->mean($operation->id);
-        }
+        $chartLabel = $chartLabel?->data_records->pluck('data','batch')->toArray() ;
 
+        $chartData =  $subcategory->variables()->where('chart_data',true)->first();
 
+        $chartData = $chartData?->data_records->pluck('data','batch')->toArray();
 
+            $data = [
+                "dataset"=>new SubcategoryResource($subcategory),
+                "chartLabel"=>$chartLabel,
+                "chartData"=>$chartData
+            ];
 
-        return $this->sendResponse(new SubcategoryResource($subcategory),"data details",200);
+        return $this->sendResponse($data,"data details",200);
     }
 
     public function subscribe_newsletter(Request $request)
