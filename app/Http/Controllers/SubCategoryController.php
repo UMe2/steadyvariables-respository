@@ -54,11 +54,9 @@ class SubCategoryController extends Controller
                     "variable_id"=>$variable['variable']
                 ],[
                     "variable_id"=>$variable['variable'],
-                    "isKey"=>$variable['isKey'],
-                    "required"=>$variable['required'],
                     "first_column"=> $variable['firstColumn'],
                     'chart_data'=>$variable['chartData'],
-                    'chart_label'=>$variable['chartLabale']
+                    'chart_label'=>$variable['chartLabel']
                 ]);
             }
 
