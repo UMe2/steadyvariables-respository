@@ -35,6 +35,9 @@ class GuestController extends Controller
         if (count($knowledge) >10){
             $knowledge= $knowledge->random(10);
         }
+        if (count($categories)>4){
+            $categories = $categories->random(4);
+        }
         $data=[
             "categories"=>DataCategoryResource::collection($categories),
             "knowledge"=> KnowledgeResource::collection($knowledge),
