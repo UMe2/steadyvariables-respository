@@ -297,7 +297,7 @@ class SubCategoryController extends Controller
 
         //return  $heading;
 
-        $excel = Excel::download(new DataRecordExport($subcategory,$resourceCollection,$heading),str_replace(" ","_",$subcategory->name,).'.xls');
+        $excel = Excel::download(new DataRecordExport($subcategory,$resourceCollection,$heading),str_replace(" ","_",$subcategory->name,).'.xlsx');
 
         $content = $excel->getFile()->getContent();
 
