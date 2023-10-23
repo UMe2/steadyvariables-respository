@@ -54,11 +54,9 @@ class SubCategoryController extends Controller
                     "variable_id"=>$variable['variable']
                 ],[
                     "variable_id"=>$variable['variable'],
-                    "isKey"=>$variable['isKey'],
-                    "required"=>$variable['required'],
                     "first_column"=> $variable['firstColumn'],
                     'chart_data'=>$variable['chartData'],
-                    'chart_label'=>$variable['chartLabale']
+                    'chart_label'=>$variable['chartLabel']
                 ]);
             }
 
@@ -123,8 +121,6 @@ class SubCategoryController extends Controller
 
         $validator = Validator::make($request->all(),[
             'variable'=>'required|exists:variables,id|uuid',
-            "required"=>"nullable|in:1,0",
-            "isKey"=>"nullable|in:0,1",
             "firstColumn"=>'required|in:0,1',
             'chartData'=>'required|in:0,1',
             'chartLabel'=>'required|in:0,1',
@@ -301,7 +297,17 @@ class SubCategoryController extends Controller
 
         //return  $heading;
 
-        return Excel::download(new DataRecordExport($subcategory,$resourceCollection,$heading),str_replace(" ","_",$subcategory->name,).'.xls');
+        $excel = Excel::download(new DataRecordExport($subcategory,$resourceCollection,$heading),str_replace(" ","_",$subcategory->name,).'.xlsx');
+
+        $content = $excel->getFile()->getContent();
+
+        // Set the appropriate headers for a Blob response
+        $headers = [
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="' . str_replace(" ", "_", $subcategory->name) . '.xls"',
+        ];
+
+        return response($content, 200, $headers);
     }
     public function delete($subcategory)
     {
