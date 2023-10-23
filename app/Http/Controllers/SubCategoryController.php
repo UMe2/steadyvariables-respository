@@ -258,7 +258,7 @@ class SubCategoryController extends Controller
             $i=0;
 
             foreach ($up as $loopKey => $data){
-                if ($data == null){
+                if (!isset($data)){
                     continue;
                 }
                 $subcategory->data_records()->create([
