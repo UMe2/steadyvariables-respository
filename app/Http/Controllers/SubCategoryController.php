@@ -310,6 +310,8 @@ class SubCategoryController extends Controller
             return $this->sendError('not found','subcategory not found',404);
         }
 
+        $subcategory->data_records()->delete();
+
        $subcategory = $subcategory->delete();
 
         return $this->sendResponse($subcategory,'subcategory deleted',200);
@@ -328,4 +330,6 @@ class SubCategoryController extends Controller
 
 
     }
+
+
 }
