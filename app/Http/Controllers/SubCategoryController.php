@@ -208,8 +208,6 @@ class SubCategoryController extends Controller
             }
 
 
-
-
             $upload[]=$excel[$i];
 
         }
