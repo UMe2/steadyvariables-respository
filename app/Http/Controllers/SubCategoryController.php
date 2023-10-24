@@ -120,27 +120,24 @@ class SubCategoryController extends Controller
         }
 
         $validator = Validator::make($request->all(),[
-            'variable'=>'required|exists:variables,id|uuid',
-            "firstColumn"=>'required|in:0,1',
-            'chartData'=>'required|in:0,1',
-            'chartLabel'=>'required|in:0,1',
-
+            'variables'=>'required',
         ]);
 
         if ($validator->fails()){
             return  $this->sendError('validation error',$validator->errors()->all(),400);
         }
 
-        $subcategory->variables()->updateOrCreate([
-            "variable_id"=>$request->variable
-        ],[
-            "variable_id"=>$request->variable,
-            "isKey"=>$request->isKey,
-            "required"=>$request->required,
-            "first_column"=> $request->firstColumn,
-            "chart_label"=>$request->chartLabel,
-            'chart_data'=>$request->chartData,
-        ]);
+
+        foreach ($request->variables as $variable){
+            $subcategory->variables()->updateOrCreate([
+                "variable_id"=>$variable['variable']
+            ],[
+                "variable_id"=>$variable['variable'],
+                "first_column"=> $variable['firstColumn'],
+                'chart_data'=>$variable['chartData'],
+                'chart_label'=>$variable['chartLabel']
+            ]);
+        }
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'variable added',201);
     }
