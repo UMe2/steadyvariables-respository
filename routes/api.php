@@ -40,6 +40,8 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
         Route::patch('/{subcategory}',[SubCategoryController::class,'update'])->name('update');
         Route::patch('/{subcategory}/variable',[SubCategoryController::class,'add_variable'])->name('add_variable');
         Route::delete('/{variable}/variable',[SubCategoryController::class,'remove_variable'])->name('remove_variable');
+        Route::delete('/{subcategory}',[SubCategoryController::class,'delete'])->name('delete');
+
         Route::patch('/{subcategory}/operation',[SubCategoryController::class,'add_operation'])->name('add_operation');
 //        Route::patch('/{subcategory}/data',[SubCategoryController::class,'add_data'])
 //            ->name('add_data');

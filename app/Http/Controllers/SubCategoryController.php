@@ -182,7 +182,7 @@ class SubCategoryController extends Controller
     {
         $subcategory = SubCategory::find($request->subcategory);
 
-      //  return $subcategory;
+        //  return $subcategory;
 
         if (!$subcategory){
             return $this->sendError('not found','subcategory not found',404);
@@ -203,7 +203,7 @@ class SubCategoryController extends Controller
         for ($i =0;$i< sizeof($excel);$i++){
             if ($i == 0) {
 
-               $variables = $excel[$i];
+                $variables = $excel[$i];
                 continue;
             }
 
@@ -220,8 +220,8 @@ class SubCategoryController extends Controller
 //            return $value !== null;
 //        });
 
-      // return $upload;
-         $subcategoryId = $subcategory->id;
+        // return $upload;
+        $subcategoryId = $subcategory->id;
         $validVariables=[];
 
 //          return  Variable::where('name', 'surface dressed')->whereHas('subcategory', function ($query) use ($subcategoryId) {
@@ -237,10 +237,10 @@ class SubCategoryController extends Controller
                 ->first();
 
 
-           $validVariables[] =$response->subcategory_variable_id;
+            $validVariables[] =$response->subcategory_variable_id;
         }
 
-      // return $validVariables;
+        // return $validVariables;
 
 
         if (count($validVariables) != count($subcategory->variables)){
@@ -256,7 +256,7 @@ class SubCategoryController extends Controller
             $i=0;
 
             foreach ($up as $loopKey => $data){
-                if ($data == null){
+                if (!isset($data)){
                     continue;
                 }
                 $subcategory->data_records()->create([
@@ -314,6 +314,8 @@ class SubCategoryController extends Controller
             return $this->sendError('not found','subcategory not found',404);
         }
 
+        $subcategory->data_records()->delete();
+
        $subcategory = $subcategory->delete();
 
         return $this->sendResponse($subcategory,'subcategory deleted',200);
@@ -332,4 +334,6 @@ class SubCategoryController extends Controller
 
 
     }
+
+
 }
