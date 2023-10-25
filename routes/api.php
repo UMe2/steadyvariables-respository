@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommonKnowledgeController;
 use App\Http\Controllers\DataCategoryController;
 use App\Http\Controllers\GuestController;
@@ -25,6 +26,7 @@ Route::get("/{subcategory}/template",[SubCategoryController::class,'download_tem
 
 Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],function (){
 
+    Route::get('/index',[AdminController::class,'index'])->name('index');
     Route::group(['prefix'=>'data-category','as'=>'category.'],function (){
        Route::get('/',[DataCategoryController::class,'index'])->name('index');
        Route::post('/',[DataCategoryController::class,'create'])->name('create');
