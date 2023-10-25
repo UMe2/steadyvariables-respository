@@ -26,7 +26,7 @@ Route::get("/{subcategory}/template",[SubCategoryController::class,'download_tem
 
 Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],function (){
 
-    Route::get('/',[AdminController::class,'index'])->name('index');
+    Route::get('/index',[AdminController::class,'index'])->name('index');
     Route::group(['prefix'=>'data-category','as'=>'category.'],function (){
        Route::get('/',[DataCategoryController::class,'index'])->name('index');
        Route::post('/',[DataCategoryController::class,'create'])->name('create');
