@@ -62,6 +62,7 @@ class SubcategoryResource extends JsonResource
             "id"=>$this->id,
             "name"=>$this->name,
             "variables"=>$this->variables?->count(),
+            "description"=> $this->description,
             "category"=>$this->category?->name
         ];
     }
