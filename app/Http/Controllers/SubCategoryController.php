@@ -312,6 +312,7 @@ class SubCategoryController extends Controller
         }
 
         $subcategory->data_records()->delete();
+        $subcategory->variables()->delete();
 
        $subcategory = $subcategory->delete();
 

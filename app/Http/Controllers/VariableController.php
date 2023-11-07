@@ -39,4 +39,24 @@ class VariableController extends Controller
 
 
     }
+
+    public function delete($variable)
+    {
+        $variable  = Variable::find($variable);
+
+        if (!$variable){
+            return $this->sendError('not found','variable not found',404);
+        }
+
+        if ($variable->subcategory != null){
+            foreach ($variable->subcategory as $subcategory){
+                $subcategory->data_records()?->delete();
+                $subcategory->delete();
+            }
+        }
+
+        $variable->delete();
+
+        return $this->sendResponse([],'deleted',203);
+    }
 }
