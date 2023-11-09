@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommonKnowledgeController;
 use App\Http\Controllers\DataCategoryController;
 use App\Http\Controllers\GuestController;
@@ -25,11 +26,13 @@ Route::get("/{subcategory}/template",[SubCategoryController::class,'download_tem
 
 Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],function (){
 
+    Route::get('/index',[AdminController::class,'index'])->name('index');
     Route::group(['prefix'=>'data-category','as'=>'category.'],function (){
        Route::get('/',[DataCategoryController::class,'index'])->name('index');
        Route::post('/',[DataCategoryController::class,'create'])->name('create');
        Route::get('/{category}',[DataCategoryController::class,'details'])->name('view');
        Route::patch('/{category}',[DataCategoryController::class,'update'])->name('update');
+       Route::delete('/{category}',[DataCategoryController::class,'delete'])->name('delete');
     });
 
 
@@ -54,6 +57,7 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
        Route::post('/',[VariableController::class,'create'])->name('create');
        Route::get('/{variable}',[VariableController::class,'details'])->name('view');
        Route::patch('/{variable}',[VariableController::class,'update'])->name('update');
+       Route::delete('/{variable}',[VariableController::class,'delete'])->name('delete');
     });
 
     Route::group(['prefix'=>'knowledge','as'=>'knowledge.'],function (){
@@ -61,6 +65,7 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
        Route::post('/',[CommonKnowledgeController::class,'create'])->name('create');
        Route::get('/{knowledge}',[CommonKnowledgeController::class,'details'])->name('details');
        Route::patch('/{knowledge}',[CommonKnowledgeController::class,'update'])->name('update');
+       Route::delete('/{knowledge}',[CommonKnowledgeController::class,'delete'])->name('delete');
 
     });
 

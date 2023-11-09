@@ -12,7 +12,7 @@ class CommonKnowledgeController extends Controller
 
     public function index()
     {
-        $knowledges = CommonKnowledge::orderBy('created_at','desc')->paginate(10);
+        $knowledges = CommonKnowledge::orderBy('created_at','desc')->get();
 
         return $this->sendResponse(KnowledgeResource::collection($knowledges),'list of knowledge',200);
     }
@@ -74,6 +74,18 @@ class CommonKnowledgeController extends Controller
         return  $this->sendResponse(new KnowledgeResource($knowledge),'knowledge found',200);
     }
 
+    public function delete($knowledge)
+    {
+        $knowledge =  CommonKnowledge::find($knowledge);
+
+        if (!$knowledge){
+            return $this->sendError("not found","common knowledge not found",404);
+        }
+
+        $knowledge->delete();
+
+        return $this->sendResponse([],'deleted',203);
+    }
 
 
 }

@@ -115,18 +115,27 @@ class GuestController extends Controller
         }
 
 
+        //return $subcategory;
         $chartLabel = $subcategory->variables()->where('chart_label',true)->first();
 
         $chartLabel = $chartLabel?->data_records->pluck('data','batch')->toArray() ;
 
+        asort($chartLabel);
+
         $chartData =  $subcategory->variables()->where('chart_data',true)->first();
 
-        $chartData = $chartData?->data_records->pluck('data','batch')->toArray();
 
+        $chartData = $chartData?->data_records->pluck('data','batch')->toArray();
+        asort($chartData);
             $data = [
                 "dataset"=>new SubcategoryResource($subcategory),
                 "chartLabel"=>$chartLabel,
-                "chartData"=>$chartData
+                "chartData"=>$chartData,
+                "operations"=> [
+                    'mean'=>$this->operationService->mean($subcategory->id),
+                    'mode'=>$this->operationService->mode($subcategory->id),
+                    'median'=>$this->operationService->median($subcategory->id),
+                ]
             ];
 
         return $this->sendResponse($data,"data details",200);
