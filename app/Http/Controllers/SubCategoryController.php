@@ -208,7 +208,7 @@ class SubCategoryController extends Controller
             $upload[]=$excel[$i];
 
         }
-        return $upload;
+        //return $upload;
         $variables = $variables->filter(function ($value) {
             return $value !== null;
         });
@@ -257,13 +257,13 @@ class SubCategoryController extends Controller
                     continue;
                 }
 
-                $exists = $subcategory->data_records()
-                    ->where('subcategory_variable_id',$validVariables[$i])
-                    ->where('data',$data);
-
-                if ($exists){
-                    continue;
-                }
+//                $exists = $subcategory->data_records()
+//                    ->where('subcategory_variable_id',$validVariables[$i])
+//                    ->where('data',$data);
+//
+//                if ($exists){
+//                    continue;
+//                }
                 $subcategory->data_records()->create([
                     "subcategory_variable_id"=>$validVariables[$i],
                     "data"=>$data,
