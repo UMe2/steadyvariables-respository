@@ -137,7 +137,7 @@ class GuestController extends Controller
                     'mode'=>$this->operationService->mode($subcategory->id),
                     'median'=>$this->operationService->median($subcategory->id),
                 ],
-                "rate_of_change"=>$this->operationService->rate_of_change($subcategory->id),
+                "rate_of_change"=>[],
             ];
 
         return $this->sendResponse($data,"data details",200);
