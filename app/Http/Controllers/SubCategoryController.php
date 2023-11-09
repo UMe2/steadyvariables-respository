@@ -208,7 +208,7 @@ class SubCategoryController extends Controller
             $upload[]=$excel[$i];
 
         }
-
+        return $upload;
         $variables = $variables->filter(function ($value) {
             return $value !== null;
         });
