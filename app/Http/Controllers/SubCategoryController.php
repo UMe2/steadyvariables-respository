@@ -261,6 +261,14 @@ class SubCategoryController extends Controller
                 if (!isset($data)){
                     continue;
                 }
+
+                $exists = $subcategory->data_records()
+                    ->where('subcategory_variable_id',$validVariables[$i])
+                    ->where('data',$data);
+
+                if ($exists){
+                    continue;
+                }
                 $subcategory->data_records()->create([
                     "subcategory_variable_id"=>$validVariables[$i],
                     "data"=>$data,
