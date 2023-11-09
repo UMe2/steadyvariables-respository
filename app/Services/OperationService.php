@@ -24,7 +24,7 @@ class OperationService
 //            $key = array_search($closest, $data);
 //
 //            $mean = $subcategory->data_records()->where('batch',$key)->get();
-            $mean;
+          return  $mean;
 
         } else {
            return $mean = 0; // Handle the case where there are no data values to avoid division by zero.
