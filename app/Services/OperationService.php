@@ -117,4 +117,33 @@ class OperationService
 
         return $closestValue;
     }
+
+    public function rate_of_change($subcategoryId)
+    {
+        $subcategory = SubCategory::find($subcategoryId);
+
+
+        $data = $this->operation_data($subcategory);
+
+        if (count($data) < 2) {
+            return null; // Handle the case when there are not enough data points to calculate a rate of change.
+        }
+
+        $roc = [];
+
+        for ($i = 1; $i < count($data); $i++) {
+            $oldValue = $data[$i - 1];
+            $newValue = $data[$i];
+
+            if ($oldValue != 0) {
+                $rateOfChange = ($newValue - $oldValue) / $oldValue;
+                $roc[] = $rateOfChange;
+            } else {
+                // Handle the case when the old value is zero (to avoid division by zero).
+                $roc[] = null;
+            }
+        }
+
+        return $roc;
+    }
 }

@@ -120,13 +120,14 @@ class GuestController extends Controller
 
         $chartLabel = $chartLabel?->data_records->pluck('data','batch')->toArray() ;
 
-        asort($chartLabel);
+           $chartLabel ? asort($chartLabel): null;
+
 
         $chartData =  $subcategory->variables()->where('chart_data',true)->first();
 
 
         $chartData = $chartData?->data_records->pluck('data','batch')->toArray();
-        asort($chartData);
+        $chartData ? asort($chartData): $chartData;
             $data = [
                 "dataset"=>new SubcategoryResource($subcategory),
                 "chartLabel"=>$chartLabel,
@@ -135,7 +136,8 @@ class GuestController extends Controller
                     'mean'=>$this->operationService->mean($subcategory->id),
                     'mode'=>$this->operationService->mode($subcategory->id),
                     'median'=>$this->operationService->median($subcategory->id),
-                ]
+                ],
+                "rate_of_change"=>$this->operationService->rate_of_change($subcategory->id),
             ];
 
         return $this->sendResponse($data,"data details",200);
