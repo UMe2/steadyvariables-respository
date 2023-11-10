@@ -38,6 +38,27 @@ class SubCategoryController extends Controller
         if ($validator->fails()){
             return $this->sendError('validator error',$validator->errors()->all(),400);
         }
+        $label=0;
+        $data=0;
+        foreach ($request->variables as $variable){
+            if ($variable['chartData'] ==1){
+                $data+=1;
+
+            }
+            if ($variable['chartLabel'] ==1){
+                $label+=1;
+
+            }
+
+        }
+
+        if ($label !=1){
+            return $this->sendError('validator error',"Chart label column must selected once",400);
+        }
+
+        if ($data !=1){
+            return $this->sendError('validator error',"Chart Data column must selected once",400);
+        }
 
         $subcategory = new SubCategory;
         DB::transaction(function () use ($request,$subcategory){
@@ -126,6 +147,8 @@ class SubCategoryController extends Controller
         if ($validator->fails()){
             return  $this->sendError('validation error',$validator->errors()->all(),400);
         }
+
+
 
 
         foreach ($request->variables as $variable){
@@ -330,6 +353,21 @@ class SubCategoryController extends Controller
     public function remove_variable($variableId)
     {
         $variable = SubcategoryVariable::find($variableId);
+
+        if($variable->chart_data == true){
+
+            $chartData = SubcategoryVariable::where('subcategory_id',$variable->subcategory_id)
+                ->where('id','!=',$variable->id)
+                ->where('chart_data','!=',true)
+                ->first();
+
+            if (!$chartData){
+
+                    return $this->sendError('validation error','subcategory not found',404);
+
+
+            }
+        }
 
         $variable->data_records()->delete();
 
