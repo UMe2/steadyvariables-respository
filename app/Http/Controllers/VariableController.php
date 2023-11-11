@@ -48,11 +48,10 @@ class VariableController extends Controller
             return $this->sendError('not found','variable not found',404);
         }
 
+
+
         if ($variable->subcategory != null){
-            foreach ($variable->subcategory as $subcategory){
-                $subcategory->data_records()?->delete();
-                $subcategory->delete();
-            }
+            return $this->sendError('validation error','Sorry please the variable has active data on it',400);
         }
 
         $variable->delete();

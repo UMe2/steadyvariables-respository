@@ -38,6 +38,27 @@ class SubCategoryController extends Controller
         if ($validator->fails()){
             return $this->sendError('validator error',$validator->errors()->all(),400);
         }
+        $label=0;
+        $data=0;
+        foreach ($request->variables as $variable){
+            if ($variable['chartData'] ==1){
+                $data+=1;
+
+            }
+            if ($variable['chartLabel'] ==1){
+                $label+=1;
+
+            }
+
+        }
+
+        if ($label !=1){
+            return $this->sendError('validator error',"Chart label column must selected once",400);
+        }
+
+        if ($data !=1){
+            return $this->sendError('validator error',"Chart Data column must selected once",400);
+        }
 
         $subcategory = new SubCategory;
         DB::transaction(function () use ($request,$subcategory){
@@ -128,7 +149,22 @@ class SubCategoryController extends Controller
         }
 
 
+
+        $chartLabel =0;
+        $chartData= 0;
         foreach ($request->variables as $variable){
+
+            if ($variable['chartData']== 1){
+                $activeData = $subcategory->variables()->where('chart_data',1)->first();
+                $activeData->chart_data=0;
+
+                $activeData->update();
+            }elseif ($variable['chartLabel']== 1){
+                $activeData = $subcategory->variables()->where('chart_label',1)->first();
+                $activeData->chart_label=0;
+
+                $activeData->update();
+            }
             $subcategory->variables()->updateOrCreate([
                 "variable_id"=>$variable['variable']
             ],[
@@ -331,6 +367,43 @@ class SubCategoryController extends Controller
     {
         $variable = SubcategoryVariable::find($variableId);
 
+        if($variable->chart_data == true){
+
+            $chartData = SubcategoryVariable::where('subcategory_id',$variable->subcategory_id)
+                ->where('id','!=',$variable->id)
+                ->where('chart_data','!=',true)
+                ->first();
+
+            if (!$chartData){
+
+                    return $this->sendError('validation error',"Data set can't exist without chart data",404);
+
+
+            }
+
+            $chartData->chart_data = true;
+
+            $chartData->update();
+        }
+
+        if($variable->chart_label == true){
+
+            $chartData = SubcategoryVariable::where('subcategory_id',$variable->subcategory_id)
+                ->where('id','!=',$variable->id)
+                ->where('chart_label','!=',true)
+                ->first();
+
+            if (!$chartData){
+
+                return $this->sendError('validation error',"Data set can't exist without chart label",404);
+
+
+            }
+
+            $chartData->chart_label = true;
+
+            $chartData->update();
+        }
         $variable->data_records()->delete();
 
         $variable->delete();
