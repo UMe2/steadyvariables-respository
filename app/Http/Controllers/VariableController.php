@@ -58,4 +58,28 @@ class VariableController extends Controller
 
         return $this->sendResponse([],'deleted',203);
     }
+
+    public function update(Request $request,$variable)
+    {
+        $variable  = Variable::find($variable);
+
+        if (!$variable){
+            return $this->sendError('not found','variable not found',404);
+        }
+        $validator = Validator::make($request->all(),[
+            'name'=>"required|string|max:200|unique:variables,name,".$variable->id,
+            "alias"=>"nullable|string|max:200"
+        ]);
+
+        if ($validator->fails()){
+            return $this->sendError('validation error',$validator->errors()->all(),400);
+
+        }
+
+        $variable->name= $request->name;
+        $variable->alias = $request->alias;
+        $variable->update();
+
+        return $this->sendResponse(new VariableResource($variable),"variable updated",201);
+    }
 }
