@@ -152,6 +152,8 @@ class SubCategoryController extends Controller
 
 
         foreach ($request->variables as $variable){
+
+
             $subcategory->variables()->updateOrCreate([
                 "variable_id"=>$variable['variable']
             ],[
@@ -363,12 +365,34 @@ class SubCategoryController extends Controller
 
             if (!$chartData){
 
-                    return $this->sendError('validation error','subcategory not found',404);
+                    return $this->sendError('validation error',"Data set can't exist without chart data",404);
 
 
             }
+
+            $chartData->chart_data = true;
+
+            $chartData->update();
         }
 
+        if($variable->chart_label == true){
+
+            $chartData = SubcategoryVariable::where('subcategory_id',$variable->subcategory_id)
+                ->where('id','!=',$variable->id)
+                ->where('chart_label','!=',true)
+                ->first();
+
+            if (!$chartData){
+
+                return $this->sendError('validation error',"Data set can't exist without chart label",404);
+
+
+            }
+
+            $chartData->chart_label = true;
+
+            $chartData->update();
+        }
         $variable->data_records()->delete();
 
         $variable->delete();
