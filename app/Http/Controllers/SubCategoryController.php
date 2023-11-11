@@ -150,10 +150,21 @@ class SubCategoryController extends Controller
 
 
 
-
+        $chartLabel =0;
+        $chartData= 0;
         foreach ($request->variables as $variable){
 
+            if ($variable['chartData']== 1){
+                $activeData = $subcategory->variables()->where('chart_data',1)->first();
+                $activeData->chart_data=0;
 
+                $activeData->update();
+            }elseif ($variable['chartLabel']== 1){
+                $activeData = $subcategory->variables()->where('chart_label',1)->first();
+                $activeData->chart_label=0;
+
+                $activeData->update();
+            }
             $subcategory->variables()->updateOrCreate([
                 "variable_id"=>$variable['variable']
             ],[
