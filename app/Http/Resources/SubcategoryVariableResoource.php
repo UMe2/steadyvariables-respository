@@ -20,6 +20,8 @@ class SubcategoryVariableResoource extends JsonResource
                 "subcategory"=>"Subcategory Name",
                 "variable"=>$this->variable?->name,
                 'firstColumn'=>$this->first_column == 1 ? true : false,
+                'charData'=>$this->chart_data == 1 ? true : false,
+                'chartLabel'=>$this->chart_label == 1 ? true : false,
             ];
         }
         return [
@@ -28,6 +30,8 @@ class SubcategoryVariableResoource extends JsonResource
             "subcategory"=>$this->subcategory?->name,
             "variable"=>$this->variable?->name,
             'firstColumn'=>$this->first_column == 1 ? true : false,
+            'charData'=>$this->chart_data == 1 ? true : false,
+            'chartLabel'=>$this->chart_label == 1 ? true : false,
         ];
     }
 }

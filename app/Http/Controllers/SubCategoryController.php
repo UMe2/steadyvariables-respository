@@ -40,10 +40,18 @@ class SubCategoryController extends Controller
         }
         $label=0;
         $data=0;
+        $invalid_variable=[];
         foreach ($request->variables as $variable){
+
             if ($variable['chartData'] ==1){
                 $data+=1;
 
+            }
+
+            $validV = Variable::find($variable['variable']);
+
+            if (!$validV){
+                $invalid_variable[]=$variable;
             }
             if ($variable['chartLabel'] ==1){
                 $label+=1;
@@ -52,6 +60,7 @@ class SubCategoryController extends Controller
 
         }
 
+
         if ($label !=1){
             return $this->sendError('validator error',"Chart label column must selected once",400);
         }
@@ -59,6 +68,12 @@ class SubCategoryController extends Controller
         if ($data !=1){
             return $this->sendError('validator error',"Chart Data column must selected once",400);
         }
+
+        if (count($invalid_variable) >0){
+            return $this->sendError('validation error','Please choose a valid variable');
+        }
+
+
 
         $subcategory = new SubCategory;
         DB::transaction(function () use ($request,$subcategory){
@@ -140,6 +155,10 @@ class SubCategoryController extends Controller
             return $this->sendError('not found','subcategory not found',404);
         }
 
+        if ($subcategory->data_records != null){
+            return $this->sendError('Validation error','Cannot add new variable to an existing dataset',400);
+        }
+
         $validator = Validator::make($request->all(),[
             'variables'=>'required',
         ]);
@@ -187,18 +206,17 @@ class SubCategoryController extends Controller
 
         $validator = Validator::make($request->all(),[
             'operation'=>'required|exists:operations,id|uuid',
-            "variable"=>"nullable|exists:variables,id|uuid",
         ]);
 
         if ($validator->fails()){
             return  $this->sendError('validation error',$validator->errors()->all(),400);
         }
 
-        $variable = $subcategory->variables->where('variable_id',$request->variable)->first();
-
-        if (!$variable){
-            return $this->sendError('not found',"variable selected not part of the dataset variable",400);
-        }
+//        $variable = $subcategory->variables->where('variable_id',$request->variable)->first();
+//
+//        if (!$variable){
+//            return $this->sendError('not found',"variable selected not part of the dataset variable",400);
+//        }
 
 
         $subcategory->operations()->updateOrCreate([
@@ -367,6 +385,9 @@ class SubCategoryController extends Controller
     {
         $variable = SubcategoryVariable::find($variableId);
 
+        if ($variable->data_records != null){
+            return $this->sendError('validation error','Sorry You cannot delete variable that has existing data',400);
+        }
         if($variable->chart_data == true){
 
             $chartData = SubcategoryVariable::where('subcategory_id',$variable->subcategory_id)
@@ -404,7 +425,6 @@ class SubCategoryController extends Controller
 
             $chartData->update();
         }
-        $variable->data_records()->delete();
 
         $variable->delete();
 
