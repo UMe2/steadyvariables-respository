@@ -72,6 +72,14 @@ class DataCategoryController extends Controller
             return $this->sendError('not found','category not found',404);
         }
 
+        if ($category->subcategories != null){
+            return $this->sendError('validation error','category has existing datasets',400);
+        }
+
+        $category->delete();
+
+        return $this->sendResponse([],'category deleted',200);
+
     }
 
 }
