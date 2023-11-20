@@ -42,6 +42,7 @@ Route::group(['middleware'=>'auth:sanctum','prefix'=>'admin','as'=>'admin.'],fun
         Route::get('/{subcategory}',[SubCategoryController::class,'details'])->name('view');
         Route::patch('/{subcategory}',[SubCategoryController::class,'update'])->name('update');
         Route::patch('/{subcategory}/variable',[SubCategoryController::class,'add_variable'])->name('add_variable');
+        Route::patch('/{subcategory}/variable/{subcategoryVariable}',[SubCategoryController::class,'update_variable'])->name('update_variable');
         Route::delete('/{variable}/variable',[SubCategoryController::class,'remove_variable'])->name('remove_variable');
         Route::delete('/{subcategory}',[SubCategoryController::class,'delete'])->name('delete');
         Route::delete('/{subcategory}/data_records',[SubCategoryController::class,'delete_records'])->name('remove_data_records');
