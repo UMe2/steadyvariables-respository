@@ -156,7 +156,7 @@ class SubCategoryController extends Controller
             return $this->sendError('not found','subcategory not found',404);
         }
 
-        if ($subcategory->data_records != null){
+        if (count($subcategory->data_records) > 0){
             return $this->sendError('Validation error','Cannot add new variable to an existing dataset',400);
         }
 
@@ -164,11 +164,26 @@ class SubCategoryController extends Controller
             'variables'=>'required',
         ]);
 
+
         if ($validator->fails()){
             return  $this->sendError('validation error',$validator->errors()->all(),400);
         }
 
+        $invalid_variable=[];
+        foreach ($request->variables as $var){
 
+            $validV = Variable::find($var['variable']);
+
+            if (!$validV){
+                $invalid_variable[]=$var;
+            }
+
+
+        }
+
+        if (count($invalid_variable) >0){
+            return $this->sendError('validation error','Please choose a valid variable');
+        }
 
         $chartLabel =0;
         $chartData= 0;
@@ -176,14 +191,20 @@ class SubCategoryController extends Controller
 
             if ($variable['chartData']== 1){
                 $activeData = $subcategory->variables()->where('chart_data',1)->first();
-                $activeData->chart_data=0;
+                if ($activeData){
+                    $activeData->chart_data=0;
 
-                $activeData->update();
+                    $activeData->update();
+                }
+
             }elseif ($variable['chartLabel']== 1){
                 $activeData = $subcategory->variables()->where('chart_label',1)->first();
-                $activeData->chart_label=0;
+                if ($activeData){
+                    $activeData->chart_label=0;
 
-                $activeData->update();
+                    $activeData->update();
+                }
+
             }
             $subcategory->variables()->updateOrCreate([
                 "variable_id"=>$variable['variable']
@@ -196,6 +217,62 @@ class SubCategoryController extends Controller
         }
 
         return $this->sendResponse(new SubcategoryResource($subcategory),'variable added',201);
+    }
+
+    public function update_variable(Request $request,$subcategory,$subcategoryVariable)
+    {
+        $subcategory = SubCategory::find($subcategory);
+
+        if (!$subcategory){
+            return $this->sendError('not found','subcategory not found',404);
+        }
+
+        $variable = $subcategory->variables()->where('id',$subcategoryVariable)->first();
+
+        if (!$variable){
+            return $this->sendError('not found','variable not found',404);
+        }
+
+        $validator = Validator::make($request->all(),[
+            'firstColumn'=>'nullable',
+            'chartData'=>'nullable',
+            'chartLabel'=>'nullable',
+
+        ]);
+
+        if ($validator->fails()){
+            $this->sendError('validation error',$validator->errors()->all(),400);
+        }
+
+        if ($request->chartData ==1){
+            $activeData = SubcategoryVariable::where('chart_data')->first();
+
+            if ($activeData){
+                $activeData->chart_data = 0;
+
+                $activeData->update();
+            }
+        }
+
+        if ($request->chartLabel ==1){
+            $activeData = SubcategoryVariable::where('chart_label')->first();
+
+            if ($activeData){
+                $activeData->chart_label = 0;
+
+                $activeData->update();
+            }
+        }
+
+        $variable->first_column = $request->firstColumn;
+        $variable->chart_data = $request->chartData;
+        $variable->chart_label = $request->chartLabel;
+
+        $variable->update();
+
+        return $this->sendResponse(new SubcategoryResource($subcategory),'variable updated',200);
+
+
     }
     public function add_operation(Request $request,$subcategory)
     {
