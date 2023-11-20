@@ -8,6 +8,7 @@ use App\Http\Resources\SubcategoryResource;
 use App\Http\Resources\SubcategoryVariableResoource;
 use App\Models\DataRecord;
 use App\Models\SubCategory;
+use App\Models\SubcategoryOperation;
 use App\Models\SubcategoryVariable;
 use App\Models\Variable;
 use Illuminate\Http\Request;
@@ -239,7 +240,7 @@ class SubCategoryController extends Controller
             return $this->sendError('not found','subcategory not found',404);
         }
         $validator = Validator::make($request->all(),[
-            "template"=>"required|mimes:xlsx"
+            "template"=>"required|mimes:xlsx:xls"
         ]);
 
         if ($validator->fails()){
@@ -432,6 +433,31 @@ class SubCategoryController extends Controller
 
 
 
+    }
+
+    public function delete_records($subcategory)
+    {
+        $subcategory = SubCategory::find($subcategory);
+        if (!$subcategory){
+            return $this->sendError('not found','subcategory not found',404);
+        }
+
+        $subcategory->data_records()->delete();
+
+        return $this->sendResponse([],'dataset records deleted successfully',200);
+    }
+
+    public function remove_operation($subcategory_operation_id)
+    {
+        $operation = SubcategoryOperation::find($subcategory_operation_id);
+
+        if (!$operation){
+            return $this->sendError('not found','operation not found',404);
+        }
+
+        $operation->delete();
+
+        return $this->sendResponse([],'operation removed',200);
     }
 
 
