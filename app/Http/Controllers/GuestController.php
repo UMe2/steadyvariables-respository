@@ -26,8 +26,8 @@ class GuestController extends Controller
     public function index(Request $request)
     {
 
-        $subcategories = SubCategory::orderBy("name","asc")->get();
-        $categories = DataCategory::all();
+        $subcategories = SubCategory::whereHas('data_records')->orderBy("name","asc")->get();
+        $categories = DataCategory::whereHas('subcategories')->get();
         $knowledge = CommonKnowledge::all();
         $topsearch =SubcategoryResource::collection(SubCategory::orderBY('search_count','DESC')->limit(10)->get()) ;
 
@@ -60,7 +60,8 @@ class GuestController extends Controller
         $data=[];
         if (isset($request->search)){
 //            if ($request->search !=null)
-            $subcategory = SubCategory::where("name",'LIKE',"%{$request->search}%")->get();
+            $subcategory = SubCategory::where("name",'LIKE',"%{$request->search}%")
+                ->whereHas('data_records')->get();
 
 
             if (count($subcategory) < 1){
@@ -84,7 +85,7 @@ class GuestController extends Controller
                 "data"=>SubcategoryResource::collection($dataCategory?->subcategories),
             ];
         }else{
-            $subcategory = SubCategory::orderBy('name','asc')->get();
+            $subcategory = SubCategory::whereHas('data_records')->orderBy('name','asc')->get();
 
             $data=[
                 "data"=>SubcategoryResource::collection($subcategory),
@@ -102,7 +103,7 @@ class GuestController extends Controller
 
     public function subcategory(Request $request,$subcategory)
     {
-        $subcategory = SubCategory::find($subcategory);
+        $subcategory = SubCategory::where('id',$subcategory)->whereHas('data_records')->first();
 
         if (!$subcategory){
             return $this->sendError("not found","data not found",404);
@@ -128,15 +129,25 @@ class GuestController extends Controller
 
         $chartData = $chartData?->data_records->pluck('data','batch')->toArray();
         $chartData ? asort($chartData): $chartData;
+        $operations=[];
+
+        foreach ($subcategory->operations as $operation){
+            if ($operation?->operation?->name == 'mean'){
+                $operations['mean']=$this->operationService->mean($subcategory->id);
+            }
+            if ($operation?->operation?->name == 'median'){
+                $operations['mode']=$this->operationService->mode($subcategory->id);
+            }
+
+            if ($operation?->operation?->name == 'mode'){
+                $operations['media']=$this->operationService->median($subcategory->id);
+            }
+        }
             $data = [
                 "dataset"=>new SubcategoryResource($subcategory),
                 "chartLabel"=>$chartLabel,
                 "chartData"=>$chartData,
-                "operations"=> [
-                    'mean'=>$this->operationService->mean($subcategory->id),
-                    'mode'=>$this->operationService->mode($subcategory->id),
-                    'median'=>$this->operationService->median($subcategory->id),
-                ],
+                "operations"=>$operations,
                 "rate_of_change"=>[],
             ];
 
