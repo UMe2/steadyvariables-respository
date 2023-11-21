@@ -317,7 +317,7 @@ class SubCategoryController extends Controller
             return $this->sendError('not found','subcategory not found',404);
         }
         $validator = Validator::make($request->all(),[
-            "template"=>"required|mimes:xlsx:xls"
+            "template"=>"required|mimes:xlsx,xls"
         ]);
 
         if ($validator->fails()){
@@ -463,7 +463,7 @@ class SubCategoryController extends Controller
     {
         $variable = SubcategoryVariable::find($variableId);
 
-        if ($variable->data_records != null){
+        if (count($variable->data_records) !=0){
             return $this->sendError('validation error','Sorry You cannot delete variable that has existing data',400);
         }
         if($variable->chart_data == true){
