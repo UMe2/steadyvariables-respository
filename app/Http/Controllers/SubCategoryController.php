@@ -364,7 +364,9 @@ class SubCategoryController extends Controller
                 ->where('variables.name', $v)
                 ->where('subcategory_variables.subcategory_id', $subcategoryId)
                 ->first();
-
+                if (!$response){
+                    return $this->sendError("validation error","incorrect variables");
+                }
 
             $validVariables[] =$response->subcategory_variable_id;
         }
