@@ -81,8 +81,11 @@ class GuestController extends Controller
             if (count($dataCategory->subcategories) < 1){
                 return $this->sendError("not found","data not found",404);
             }
+
+            $subcategories = SubCategory::where('category_id', $dataCategory->id)
+                ->whereHas('data_records')->orderBy('name','asc')->get();
             $data=[
-                "data"=>SubcategoryResource::collection($dataCategory?->subcategories),
+                "data"=>SubcategoryResource::collection($subcategories),
             ];
         }else{
             $subcategory = SubCategory::whereHas('data_records')->orderBy('name','asc')->get();
