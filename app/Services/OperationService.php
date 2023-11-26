@@ -51,7 +51,7 @@ class OperationService
 
 // Find all values that have the maximum count (the mode).
        $mode = array_keys($valueCounts, $maxCount);
-        return $mode[0];
+        return doubleval($mode[0]) ;
     }
 
     public function median($subcategoryId)
@@ -81,7 +81,7 @@ class OperationService
             $median = $data[($length - 1) / 2];
         }
 
-        return $median;
+        return doubleval($median);
     }
 
     public function operation_data($subCategory)
