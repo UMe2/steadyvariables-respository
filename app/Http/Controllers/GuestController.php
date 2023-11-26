@@ -130,7 +130,7 @@ class GuestController extends Controller
         $chartData = $chartData?->data_records->pluck('data','batch')->toArray();
         $chartData ? asort($chartData): $chartData;
         $operations=[];
-
+        $rate_of_change=[];
         foreach ($subcategory->operations as $operation){
             if ($operation?->operation?->name == 'mean'){
                 $operations['mean']=$this->operationService->mean($subcategory->id);
@@ -142,13 +142,19 @@ class GuestController extends Controller
             if ($operation?->operation?->name == 'mode'){
                 $operations['media']=$this->operationService->median($subcategory->id);
             }
+
+            if ($operation?->operation?->name == 'rate_of_change'){
+                $rate_of_change = $this->operationService->rate_of_change($subcategory->id);
+            }
         }
+
+
             $data = [
                 "dataset"=>new SubcategoryResource($subcategory),
                 "chartLabel"=>$chartLabel,
                 "chartData"=>$chartData,
                 "operations"=>$operations,
-                "rate_of_change"=>[],
+                "rate_of_change"=>$rate_of_change,
             ];
 
         return $this->sendResponse($data,"data details",200);
