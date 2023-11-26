@@ -51,7 +51,7 @@ class OperationService
 
 // Find all values that have the maximum count (the mode).
        $mode = array_keys($valueCounts, $maxCount);
-        return $mode;
+        return $mode[0];
     }
 
     public function median($subcategoryId)
@@ -125,11 +125,21 @@ class OperationService
 
         $data = $this->operation_data($subcategory);
 
+        $array_keys = array_keys($data);
+        $data = array_values( $data);
+
+        $label =$this->chart_label($subcategory,$array_keys);
+       // return $label;
+
+
+        //return $array_keys;
+
         if (count($data) < 2) {
             return null; // Handle the case when there are not enough data points to calculate a rate of change.
         }
 
         $roc = [];
+
 
         for ($i = 1; $i < count($data); $i++) {
             $oldValue = $data[$i - 1];
@@ -137,13 +147,29 @@ class OperationService
 
             if ($oldValue != 0) {
                 $rateOfChange = ($newValue - $oldValue) / $oldValue;
-                $roc[] = $rateOfChange;
+                $roc[$label[$i]] = $rateOfChange;
             } else {
                 // Handle the case when the old value is zero (to avoid division by zero).
                 $roc[] = null;
             }
         }
 
+
+
         return $roc;
+    }
+
+    public function chart_label(SubCategory $subCategory,$batches)
+    {
+           $variable = $subCategory->variables->where('chart_label',true)->first();
+           $data=[];
+           foreach($batches as $batch ){
+               $data[] = $variable->data_records->where('batch',$batch)->first()->data;
+           }
+
+            asort($data);
+           return array_values($data);
+
+
     }
 }
