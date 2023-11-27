@@ -139,11 +139,11 @@ class GuestController extends Controller
                 $operations['mean']=$this->operationService->mean($subcategory->id);
             }
             if ($operation?->operation?->name == 'median'){
-                $operations['mode']=$this->operationService->mode($subcategory->id);
+                $operations['median']=$this->operationService->median($subcategory->id);
             }
 
             if ($operation?->operation?->name == 'mode'){
-                $operations['media']=$this->operationService->median($subcategory->id);
+                $operations['mode']=$this->operationService->mode($subcategory->id);
             }
 
             if ($operation?->operation?->name == 'rate_of_change'){
