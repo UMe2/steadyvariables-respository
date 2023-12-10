@@ -50,7 +50,7 @@ class VariableController extends Controller
 
 
 
-        if ($variable->subcategory != null){
+        if (count($variable->subcategory) > 0){
             return $this->sendError('validation error','Sorry please the variable has active data on it',400);
         }
 
